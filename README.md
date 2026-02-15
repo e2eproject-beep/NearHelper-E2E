@@ -32,4 +32,37 @@ accessible technology. The platform consists of two separate modules:
   By combining real-time availability, voice guidance, multi-language support, and proximity-based 
   search, NearHelper empowers workers and simplifies service access. It bridges the gap between urban 
   households, rural farmers, and the workforce, creating a reliable, inclusive, and user-friendly platform that 
-  can positively impact communities across India. 
+  can positively impact communities across India.
+
+## Objectives: 
+- Simplify hiring of domestic and agricultural workers
+- Enable real-time availability tracking
+- Support voice-assisted and multi-language interfaces
+- Improve trust using authentication and verification
+
+## Modules:
+1. Domestic Worker - Multi-Language Support: Supports regional languages
+   Native Voice Guidance: Helps illiterate users navigate
+   Authentication & Verification: OTP & Aadhaar for trust
+   Availability Management: Busy/Available status with expected completion
+2. Domestic Worker Finder - Proximity-Based Search: Find nearest workers in real-time
+   Profile with Live Location: Skills, experience, contact numbers
+   Ratings and Reviews: To help search to find skillful workers
+   Availability Based Search Results.
+3. Agricultural equipment owner - Registration:  Based on crop wise equipment.
+   Simple UI: Using more icons to reduce complexity for the users.
+   Voice Guidance: Voice guidance to make the process easy.
+   Verification: Mobile or aadhar verification to allow genuine workers
+4. Farmer - Search Results: Filter by availability, location and ratings
+   Profiles: Clear profile with contact number and additional information.
+   Ratings and Reviews:  To promote skillful and genuine workers 
+   Required equipment based search.
+
+## Features of modules:
+- Cloud Fucntions
+- Maps and Web speech API
+- React UI
+- GeoFirestore
+- Firestore Queries
+- Map API
+
