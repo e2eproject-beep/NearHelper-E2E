@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Photo Upload – NearHelper</title>
+
+<style>
+  /* Global Dark Theme */
+  body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: hsl(233, 56%, 16%);
+    color: #f8fafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  /* Centered Card */
+  .card {
+    background: hsl(233, 56%, 22%);
+    padding: 40px 30px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+    text-align: center;
+    transition: background 0.3s;
+  }
+
+  h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #4a90e2;
+    text-shadow: 0 2px 6px rgba(0,0,0,0.5);
+  }
+
+  p {
+    font-size: 15px;
+    color: #cbd5e1;
+    margin-bottom: 25px;
+  }
+
+  input[type="file"] {
+    display: none;
+  }
+
+  .upload-btn {
+    display: inline-block;
+    padding: 12px 20px;
+    background: #4a90e2;
+    color: #fff;
+    border-radius: 12px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    transition: 0.3s;
+    text-decoration: none;
+    font-weight: 600;
+  }
+
+  .upload-btn:hover {
+    background: #357ab7;
+  }
+
+  img.preview {
+    display: none;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    object-fit: cover;
+    border: 2px solid #4a90e2;
+  }
+
+  button.next-btn {
+    width: 100%;
+    padding: 14px 0;
+    background: #4a90e2;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+  }
+
+  button.next-btn:hover {
+    background: #357ab7;
+  }
+
+  /* Responsive */
+  @media (max-width: 400px) {
+    .card {
+      padding: 30px 20px;
+    }
+    h2 {
+      font-size: 24px;
+    }
+  }
+</style>
+
+<script>
+  function handleFile(event) {
+    const file = event.target.files[0];
+    if(file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const preview = document.getElementById('preview');
+        preview.src = e.target.result;
+        preview.style.display = 'block';
+      }
+      reader.readAsDataURL(file);
+    }
+  }
+
+  function nextPage() {
+    const fileInput = document.getElementById('photo');
+    if(!fileInput.files[0]) {
+      alert('Please upload a profile photo');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      localStorage.setItem('workerPhoto', e.target.result);
+      window.location.href = 'module-selection.html';
+    }
+    reader.readAsDataURL(fileInput.files[0]);
+  }
+</script>
+</head>
+
+<body>
+  <div class="card">
+    <h2>Upload Your Profile Photo</h2>
+    <p>Please upload a clear picture for your profile</p>
+
+    <img id="preview" class="preview" alt="Preview">
+
+    <label class="upload-btn" for="photo">Choose Photo</label>
+    <input type="file" id="photo" accept="image/*" onchange="handleFile(event)" />
+
+    <button class="next-btn" onclick="nextPage()">Next</button>
+  </div>
+</body>
+</html>

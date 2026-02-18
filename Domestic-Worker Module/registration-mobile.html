@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register – NearHelper</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { margin-top: 60px; width: 92%; max-width: 400px; }
+        .heading { text-align: center; font-size: 24px; color: var(--primary-color); }
+        .sub { text-align: center; margin-bottom: 20px; color: var(--text-light); }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">Register</h2>
+    <p class="sub">Enter your mobile number to create a new account</p>
+
+    <div class="input-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" maxlength="10" placeholder="Enter 10-digit number">
+    </div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="startRegistration()">Continue</button>
+
+    <div class="links" style="text-align:center;margin-top:10px;" onclick="goLogin()">
+        Already have an account? Login
+    </div>
+
+</div>
+
+<script>
+function startRegistration() {
+    const mobile = document.getElementById("mobile").value.trim();
+    const error = document.getElementById("error");
+
+    error.textContent = "";
+
+    if (mobile.length !== 10 || isNaN(mobile)) {
+        error.textContent = "Please enter a valid 10-digit mobile number.";
+        return;
+    }
+
+    // Check if already registered
+    const isRegistered = localStorage.getItem("workerREGISTERED_" + mobile);
+
+    if (isRegistered === "yes") {
+        error.textContent = "This mobile number is already registered. Please login.";
+        return;
+    }
+
+    // Save mobile for OTP
+    localStorage.setItem("temp_mobile", mobile);
+    localStorage.setItem("flow_mode", "registration");
+
+    window.location.href = "verification.html";
+}
+
+function goLogin() {
+    window.location.href = "login.html";
+}
+</script>
+
+</body>
+</html>

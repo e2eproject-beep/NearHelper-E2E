@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create PIN – NearHelper</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { margin-top: 60px; width: 92%; max-width: 400px; }
+        .heading { text-align:center; font-size:24px; color:var(--primary-color); }
+        .sub { text-align:center; margin-bottom:20px; color:var(--text-light); }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">Create PIN</h2>
+    <p class="sub">Set a secure 4-digit PIN for your account</p>
+
+    <div class="input-group">
+        <label>New PIN</label>
+        <input type="password" id="pin1" maxlength="4" placeholder="Enter 4-digit PIN">
+    </div>
+
+    <div class="input-group">
+        <label>Confirm PIN</label>
+        <input type="password" id="pin2" maxlength="4" placeholder="Re-enter PIN">
+    </div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="savePIN()">Save PIN</button>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const flow = localStorage.getItem("flow_mode");
+
+    // If someone tries to open this page without OTP step → redirect
+    if (flow !== "registration" && flow !== "forgot") {
+        window.location.href = "login.html";
+        return;
+    }
+});
+
+function savePIN() {
+    const pin1 = document.getElementById("pin1").value.trim();
+    const pin2 = document.getElementById("pin2").value.trim();
+    const error = document.getElementById("error");
+
+    const flow = localStorage.getItem("flow_mode");
+    const mobile = localStorage.getItem("temp_mobile");
+
+    error.textContent = "";
+
+    if (pin1.length !== 4 || isNaN(pin1)) {
+        error.textContent = "PIN must be a 4-digit number.";
+        return;
+    }
+
+    if (pin1 !== pin2) {
+        error.textContent = "PINs do not match.";
+        return;
+    }
+
+    // Save PIN
+    localStorage.setItem("workerPIN_" + mobile, pin1);
+
+    // If new registration → mark user registered
+    if (flow === "registration") {
+        localStorage.setItem("workerREGISTERED_" + mobile, "yes");
+
+        // Continue onboarding
+        window.location.href = "photo-upload.html";
+    }
+
+    // If forgot PIN → go directly to dashboard
+    else if (flow === "forgot") {
+        localStorage.setItem("active_user", mobile);
+        window.location.href = "worker-dashboard.html";
+    }
+}
+</script>
+
+</body>
+</html>

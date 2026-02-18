@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Enter PIN – NearHelper</title>
+
+    <!-- Global Theme -->
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .card {
+            max-width: 400px;
+            margin-top: 80px;
+        }
+
+        .pin-box {
+            display: flex;
+            justify-content: space-between;
+            margin: 20px 0;
+        }
+
+        .pin-box input {
+            width: 55px;
+            height: 55px;
+            font-size: 22px;
+            text-align: center;
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-color);
+        }
+
+        .forgot {
+            margin-top: 12px;
+            text-align: center;
+            color: var(--primary-color);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <h2>Enter PIN</h2>
+    <p>Enter your 4-digit login PIN</p>
+
+    <div class="pin-box">
+        <input type="password" maxlength="1">
+        <input type="password" maxlength="1">
+        <input type="password" maxlength="1">
+        <input type="password" maxlength="1">
+    </div>
+
+    <p id="pin-error" class="error"></p>
+
+    <button onclick="verifyPIN()">Login</button>
+
+    <div class="forgot" onclick="goToForgotPin()">
+        Forgot PIN?
+    </div>
+
+</div>
+
+<script>
+    // Auto move between inputs
+    document.addEventListener("DOMContentLoaded", () => {
+        const inputs = document.querySelectorAll(".pin-box input");
+
+        inputs.forEach((input, i) => {
+            input.addEventListener("input", () => {
+                if (input.value && i < 3) inputs[i + 1].focus();
+            });
+
+            input.addEventListener("keydown", (e) => {
+                if (e.key === "Backspace" && i > 0 && !input.value) {
+                    inputs[i - 1].focus();
+                }
+            });
+        });
+    });
+
+    function verifyPIN() {
+        const inputs = document.querySelectorAll(".pin-box input");
+        const error = document.getElementById("pin-error");
+        let enteredPIN = "";
+
+        inputs.forEach(inp => enteredPIN += inp.value);
+
+        if (enteredPIN.length !== 4) {
+            error.textContent = "Please enter your full 4-digit PIN.";
+            return;
+        }
+
+        const mobile = localStorage.getItem("temp_mobile");
+        const savedPIN = localStorage.getItem("workerPIN_" + mobile);
+
+        if (!savedPIN) {
+            error.textContent = "No PIN found. Register again.";
+            return;
+        }
+
+        if (enteredPIN === savedPIN) {
+            window.location.href = "worker-dashboard.html";
+        } else {
+            error.textContent = "Incorrect PIN. Try again.";
+        }
+    }
+
+    function goToForgotPin() {
+        // Set flow flag
+        localStorage.setItem("flow_mode", "forgot");
+
+        // Redirect to forgot pin OTP page
+        window.location.href = "verification.html";
+    }
+</script>
+
+</body>
+</html>

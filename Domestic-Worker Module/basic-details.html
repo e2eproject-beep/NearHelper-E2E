@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Details – NearHelper</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { margin-top: 40px; width: 92%; max-width: 420px; }
+        .heading { text-align:center; font-size:24px; color:var(--primary-color); margin-bottom:8px; }
+        .sub { text-align:center; color:var(--text-light); margin-bottom:20px; }
+        .row {
+            display:flex;
+            gap:10px;
+        }
+        .row .input-group {
+            flex:1;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">Basic Details</h2>
+    <p class="sub">We need this information to create your worker profile</p>
+
+    <div class="input-group">
+        <label>Full Name</label>
+        <input type="text" id="name" placeholder="Enter full name">
+    </div>
+
+    <div class="input-group">
+        <label>Age</label>
+        <input type="number" id="age" placeholder="Enter age">
+    </div>
+
+    <div class="input-group">
+        <label>Gender</label>
+        <select id="gender">
+            <option value="">Select gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Other</option>
+        </select>
+    </div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="saveDetails()">Continue</button>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const flow = localStorage.getItem("flow_mode");
+
+    // ❌ If flow is NOT registration → redirect
+    if (flow !== "registration") {
+        window.location.href = "login.html";
+        return;
+    }
+});
+
+function saveDetails() {
+    const name = document.getElementById("name").value.trim();
+    const age = document.getElementById("age").value.trim();
+    const gender = document.getElementById("gender").value;
+    const error = document.getElementById("error");
+
+    error.textContent = "";
+
+    if (!name) {
+        error.textContent = "Please enter your full name.";
+        return;
+    }
+
+    if (!age || age < 18) {
+        error.textContent = "Enter a valid age (18+).";
+        return;
+    }
+
+    if (!gender) {
+        error.textContent = "Please select gender.";
+        return;
+    }
+
+    const mobile = localStorage.getItem("temp_mobile");
+
+    // Save worker info (NOT registered yet)
+    const workerData = {
+        mobile,
+        name,
+        age,
+        gender
+    };
+
+    localStorage.setItem("worker_" + mobile, JSON.stringify(workerData));
+
+    // Continue to create PIN
+    window.location.href = "create-pin.html";
+}
+</script>
+
+</body>
+</html>

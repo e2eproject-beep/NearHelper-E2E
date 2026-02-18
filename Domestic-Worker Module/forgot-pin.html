@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot PIN – NearHelper</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container {
+            margin-top: 60px;
+            width: 90%;
+            max-width: 400px;
+        }
+        .heading {
+            text-align: center;
+            font-size: 22px;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+        .sub {
+            text-align: center;
+            color: var(--text-light);
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">Forgot Your PIN?</h2>
+    <p class="sub">We will verify your mobile number to reset your PIN.</p>
+
+    <div class="input-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" maxlength="10" placeholder="Enter 10-digit number">
+    </div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="sendForgotOTP()">Send OTP</button>
+
+</div>
+
+<script>
+function sendForgotOTP() {
+    const mobile = document.getElementById("mobile").value.trim();
+    const error = document.getElementById("error");
+
+    error.textContent = "";
+
+    // Validate mobile
+    if (!mobile || mobile.length !== 10 || isNaN(mobile)) {
+        error.textContent = "Please enter a valid 10-digit mobile number.";
+        return;
+    }
+
+    // Check user registration
+    const isRegistered = localStorage.getItem("workerREGISTERED_" + mobile);
+
+    if (isRegistered === "yes") {
+
+        // Save for next step
+        localStorage.setItem("temp_mobile", mobile);
+        localStorage.setItem("flow_mode", "forgot");
+
+        // Move to OTP screen
+        window.location.href = "verification.html";
+
+    } else {
+        error.textContent = "This mobile number is not registered.";
+    }
+}
+</script>
+
+</body>
+</html>

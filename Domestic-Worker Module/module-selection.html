@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Module – NearHelper</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { margin-top: 40px; width: 92%; max-width: 420px; }
+        .heading { text-align:center; font-size:24px; color:var(--primary-color); margin-bottom:8px; }
+        .sub { text-align:center; color:var(--text-light); margin-bottom:20px; }
+
+        .module-option {
+            border: 1px solid var(--primary-color);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .module-option:hover {
+            background: var(--primary-light);
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">Select Your Work Module</h2>
+    <p class="sub">Choose the type of work you offer</p>
+
+    <div class="module-option" onclick="selectModule('domestic')">
+        Domestic Worker
+    </div>
+
+    <div class="module-option" onclick="selectModule('agriculture')">
+        Agricultural Worker
+    </div>
+
+    <div class="module-option" onclick="selectModule('both')">
+        Both
+    </div>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const flow = localStorage.getItem("flow_mode");
+
+    // This page must ONLY open during new registration
+    if (flow !== "registration") {
+        window.location.href = "login.html";
+        return;
+    }
+});
+
+function selectModule(selected) {
+    const mobile = localStorage.getItem("temp_mobile");
+
+    localStorage.setItem("workerModule_" + mobile, selected);
+
+    // Proceed to skill selection
+    window.location.href = "skill-selection.html";
+}
+</script>
+
+</body>
+</html>
