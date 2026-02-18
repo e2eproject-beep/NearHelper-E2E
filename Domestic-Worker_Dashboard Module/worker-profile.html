@@ -1,1 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Worker Profile – WorkConnect</title>
 
+<style>
+  body {
+    margin: 0;
+    background: #0a0e27;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: center;
+    padding: 25px;
+    color: #fff;
+  }
+
+  .profile-card {
+    width: 100%;
+    max-width: 480px;
+    background: #121740;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 30px;
+  }
+
+  .profile-pic {
+    width: 120px;
+    height: 120px;
+    background: #1c2450;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    color: #4da3ff;
+    object-fit: cover;
+  }
+
+  .info-box {
+    background: #1c2450;
+    padding: 16px;
+    border-radius: 12px;
+    margin-bottom: 18px;
+  }
+
+  .title {
+    font-size: 14px;
+    color: #9bb2d1;
+  }
+
+  .value {
+    font-size: 17px;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .edit-btn {
+    width: 100%;
+    padding: 14px;
+    background: #4da3ff;
+    border: none;
+    border-radius: 12px;
+    font-size: 17px;
+    color: #fff;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s;
+  }
+
+  .edit-btn:hover { background: #216cd8; }
+  .logout { background: #e04e4e; margin-top: 15px; }
+  .logout:hover { background: #b93b3b; }
+
+  body.light { background: #f4f6ff; color: #1a1a1a; }
+  body.light .profile-card { background: #ffffff; color: #1a1a1a; }
+  body.light .info-box { background: #f1f3fb; }
+  body.light .title { color: #5a5f6a; }
+  body.light .edit-btn { background: #005dd1; }
+  body.light .logout { background: #d9534f; }
+</style>
+
+<script>
+function loadProfile() {
+  const mobile = localStorage.getItem("active_user");
+
+  // Load chosen photo
+  const photoSrc = localStorage.getItem("workerPhoto");
+  const picEl = document.querySelector(".profile-pic");
+  if (photoSrc) {
+    picEl.innerHTML = "";
+    picEl.style.background = "none";
+    picEl.style.border = "2px solid #4da3ff";
+    const img = document.createElement("img");
+    img.src = photoSrc;
+    img.alt = "Profile Photo";
+    img.style.width = "120px";
+    img.style.height = "120px";
+    img.style.borderRadius = "50%";
+    img.style.objectFit = "cover";
+    picEl.appendChild(img);
+  } else {
+    picEl.textContent = "👤";
+  }
+
+  document.getElementById("module").textContent =
+    localStorage.getItem("workerModule_" + mobile) || "N/A";
+
+  const skills = JSON.parse(localStorage.getItem("workerSkills_" + mobile) || "[]");
+  document.getElementById("skills").textContent =
+    skills.length ? skills.join(", ") : "N/A";
+
+  const availability = localStorage.getItem("workerAvailable_" + mobile);
+  document.getElementById("availability").textContent =
+    availability === "yes" ? "Available" : "Unavailable";
+
+  const lat = localStorage.getItem("workerLat_" + mobile);
+  const lng = localStorage.getItem("workerLng_" + mobile);
+  if (lat && lng) {
+    document.getElementById("location").textContent =
+      `Lat: ${parseFloat(lat).toFixed(4)}, Lng: ${parseFloat(lng).toFixed(4)}`;
+  } else {
+    document.getElementById("location").textContent = "Location Not Set";
+  }
+}
+
+/* Theme Loader */
+document.addEventListener("DOMContentLoaded", () => {
+  const savedTheme = localStorage.getItem("theme") || "dark";
+  if (savedTheme === "light") document.body.classList.add("light");
+
+  loadProfile();
+});
+
+function logout() {
+  localStorage.removeItem("active_user");
+  window.location.href = "login.html";
+}
+</script>
+</head>
+
+<body>
+  <div class="profile-card">
+    <h2>Your Profile</h2>
+    <div class="profile-pic">👤</div>
+
+    <div class="info-box">
+      <div class="title">Module</div>
+      <div class="value" id="module"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="title">Skills</div>
+      <div class="value" id="skills"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="title">Availability</div>
+      <div class="value" id="availability"></div>
+    </div>
+
+    <div class="info-box">
+      <div class="title">Current Location</div>
+      <div class="value" id="location"></div>
+    </div>
+
+    <!-- 🔥 Always opens skill-selection.html now -->
+    <button class="edit-btn" onclick="window.location.href='skill-selection.html'">
+      Edit Skills
+    </button>
+
+    <button class="edit-btn" onclick="window.location.href='availability-location.html'">
+      Edit Availability & Location
+    </button>
+
+    <button class="logout edit-btn" onclick="logout()">Logout</button>
+  </div>
+</body>
+</html>

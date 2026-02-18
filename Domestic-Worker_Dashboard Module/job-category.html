@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Domestic Worker – Skill Selection</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #0a0e27;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .card {
+    background: #121740;
+    padding: 40px 25px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 26px;
+    font-weight: 600;
+    margin-bottom: 15px;
+  }
+
+  p {
+    font-size: 14px;
+    color: #aeb7c2;
+    margin-bottom: 25px;
+  }
+
+  .skill-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 25px;
+  }
+
+  .skill-list label {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 12px;
+    background: #1f2a54;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  .skill-list label:hover {
+    background: #2e3b7a;
+  }
+
+  .skill-list input[type="checkbox"] {
+    margin-right: 12px;
+    accent-color: #4da3ff;
+  }
+
+  .custom-skill-box {
+    margin-top: 10px;
+    display: none;
+  }
+
+  .custom-skill-box input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: #1f2a54;
+    color: #fff;
+    font-size: 14px;
+  }
+
+  button.next-btn {
+    width: 100%;
+    padding: 14px 0;
+    background: #4da3ff;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button.next-btn:hover {
+    background: #2274d4;
+  }
+</style>
+
+<script>
+  // Domestic worker skills only
+  const domesticSkills = [
+    "Mason",
+    "Carpenter",
+    "Painter",
+    "Plumber",
+    "Electrician",
+    "House Maid",
+    "Cook",
+    "Baby Care",
+    "Elder Care",
+    "Driver",
+    "Cleaning / Sweeping",
+    "Daily Labour Worker"
+  ];
+
+  function loadSkills() {
+    const skillList = document.querySelector('.skill-list');
+
+    domesticSkills.forEach(skill => {
+      const label = document.createElement('label');
+      label.innerHTML = `<input type="checkbox" value="${skill}"> ${skill}`;
+      skillList.appendChild(label);
+    });
+
+    // Add "Other" option
+    const otherLabel = document.createElement('label');
+    otherLabel.innerHTML = `<input type="checkbox" id="otherSkillCheck" value="Other"> Other – Not in the list`;
+    skillList.appendChild(otherLabel);
+
+    // Toggle custom skill input
+    document.getElementById('otherSkillCheck').addEventListener('change', function () {
+      document.querySelector('.custom-skill-box').style.display = this.checked ? "block" : "none";
+    });
+  }
+
+  function saveSkills() {
+    const selectedSkills = [];
+    const checkboxes = document.querySelectorAll('.skill-list input[type="checkbox"]');
+
+    checkboxes.forEach(cb => {
+      if (cb.checked && cb.value !== "Other") {
+        selectedSkills.push(cb.value);
+      }
+    });
+
+    const otherChecked = document.getElementById('otherSkillCheck').checked;
+    const customSkill = document.getElementById('customSkillInput').value.trim();
+
+    if (otherChecked && customSkill.length === 0) {
+      alert("Please type your custom skill");
+      return;
+    }
+
+    if (otherChecked && customSkill.length > 0) {
+      selectedSkills.push(customSkill);
+    }
+
+    if (selectedSkills.length === 0) {
+      alert('Please select at least one skill');
+      return;
+    }
+
+    localStorage.setItem('workerSkills', JSON.stringify(selectedSkills));
+    window.location.href = 'availability-location.html';
+  }
+
+  window.onload = loadSkills;
+</script>
+</head>
+
+<body>
+  <div class="card">
+    <h2>Select Your Skills</h2>
+    <p>Choose the work you can provide</p>
+
+    <div class="skill-list"></div>
+
+    <div class="custom-skill-box">
+      <input id="customSkillInput" type="text" placeholder="Enter your skill/service" />
+    </div>
+
+    <button class="next-btn" onclick="saveSkills()">Next</button>
+  </div>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Jobs Completed – WorkConnect</title>
+
+<style>
+body {
+  margin:0; 
+  font-family:'Poppins',sans-serif; 
+  background:#0a0e27; 
+  color:#fff;
+}
+
+.header {
+  background:#121740; 
+  padding:18px 25px; 
+  font-size:22px; 
+  font-weight:600; 
+  text-align:center; 
+  box-shadow:0 4px 15px rgba(0,0,0,0.4);
+}
+
+.container { padding:25px; }
+
+.job-card {
+  background:#1c2450; 
+  padding:16px; 
+  border-radius:12px; 
+  margin-bottom:14px;
+}
+
+.job-title { font-weight:600; font-size:16px; }
+.job-info { font-size:14px; color:#b9c7df; margin-top:4px; }
+
+.btn {
+  width:100%; 
+  max-width:400px; 
+  display:block; 
+  margin:15px auto; 
+  padding:14px; 
+  border:none; 
+  border-radius:12px; 
+  font-size:16px; 
+  color:#fff; 
+  cursor:pointer; 
+  transition:0.3s;
+}
+
+.back-btn { background:#4da3ff; }
+.back-btn:hover { background:#2274d4; }
+
+/* LIGHT THEME OVERRIDES */
+body.light { background:#f4f6ff; color:#1a1a1a; }
+body.light .header { background:#dde3ff; color:#1a1a1a; }
+body.light .job-card { background:#ffffff; color:#1a1a1a; }
+body.light .job-info { color:#5b6270; }
+
+</style>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const theme = localStorage.getItem("theme") || "dark";
+  if (theme === "light") document.body.classList.add("light");
+
+  loadCompletedJobs();
+});
+
+function loadCompletedJobs() {
+  const mobile = localStorage.getItem("active_user");
+  const jobs = JSON.parse(localStorage.getItem("jobs_completed_" + mobile) || "[]");
+
+  const container = document.getElementById("jobs");
+  container.innerHTML = "";
+
+  if (!jobs.length) {
+    container.innerHTML = "<p>No completed jobs yet.</p>";
+    return;
+  }
+
+  jobs.forEach(job => {
+    const div = document.createElement("div");
+    div.className = "job-card";
+
+    div.innerHTML = `
+      <div class="job-title">${job.title}</div>
+      <div class="job-info">Location: ${job.location}</div>
+      <div class="job-info">Date: ${job.date}</div>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+function goToDashboard() {
+  window.location.href = "worker-dashboard.html";
+}
+</script>
+</head>
+
+<body>
+  <div class="header">Jobs Completed</div>
+
+  <div class="container" id="jobs"></div>
+
+  <button class="btn back-btn" onclick="goToDashboard()">Back to Dashboard</button>
+</body>
+</html>
