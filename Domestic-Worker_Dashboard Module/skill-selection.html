@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Select Skills – NearHelper</title>
+
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { margin-top: 40px; width: 92%; max-width: 420px; }
+        .heading { text-align:center; font-size:24px; color:var(--primary-color); margin-bottom:8px; }
+        .sub { text-align:center; color:var(--text-light); margin-bottom:20px; }
+
+        .skill-option {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid var(--primary-color);
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .skill-option.selected {
+            background: var(--primary-color);
+            color: #fff;
+        }
+
+        .btn { margin-top: 10px; }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">Select Your Skills</h2>
+    <p class="sub">Choose the skills you offer</p>
+
+    <div id="skillsContainer"></div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="saveSkills()">Continue</button>
+
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const flow = localStorage.getItem("flow_mode");
+
+    // Only registration flow should access this page
+    if (flow !== "registration") {
+        window.location.href = "login.html";
+        return;
+    }
+
+    renderSkills();
+});
+
+function renderSkills() {
+    const mobile = localStorage.getItem("temp_mobile");
+    const module = localStorage.getItem("workerModule_" + mobile);
+    const skillsContainer = document.getElementById("skillsContainer");
+
+    const domesticSkills = [
+        "Cooking", "Cleaning", "Washing Clothes", "Driver", "Baby Care",
+        "Elder Care", "Security Guard", "Housekeeping","painter"
+    ];
+
+    const agricultureSkills = [
+        "Planting", "Harvesting", "Plowing", "Irrigation",
+        "Fertilizer Application", "Pesticide Spraying",
+        "Tractor Operation", "Livestock Care"
+    ];
+
+    let skillsToShow = [];
+
+    if (module === "domestic") skillsToShow = domesticSkills;
+    else if (module === "agriculture") skillsToShow = agricultureSkills;
+    else skillsToShow = [...domesticSkills, ...agricultureSkills];
+
+    skillsToShow.forEach(skill => {
+        const div = document.createElement("div");
+        div.classList.add("skill-option");
+        div.textContent = skill;
+
+        div.onclick = () => div.classList.toggle("selected");
+
+        skillsContainer.appendChild(div);
+    });
+}
+
+function saveSkills() {
+    const mobile = localStorage.getItem("temp_mobile");
+    const error = document.getElementById("error");
+
+    const selectedSkills = Array.from(
+        document.querySelectorAll(".skill-option.selected")
+    ).map(s => s.textContent);
+
+    if (selectedSkills.length === 0) {
+        error.textContent = "Please select at least one skill.";
+        return;
+    }
+
+    // Save skills
+    localStorage.setItem("workerSkills_" + mobile, JSON.stringify(selectedSkills));
+
+    // Mark full registration completed
+    localStorage.setItem("workerREGISTERED_" + mobile, "yes");
+
+    // Log user in
+    localStorage.setItem("active_user", mobile);
+
+    // Redirect to dashboard
+    window.location.href = "worker-dashboard.html";
+}
+</script>
+
+</body>
+</html>

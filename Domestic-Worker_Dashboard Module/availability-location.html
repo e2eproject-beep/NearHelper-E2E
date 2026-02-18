@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Availability & Location – WorkConnect</title>
+
+<style>
+  body {
+    margin: 0;
+    font-family: 'Poppins', Arial, sans-serif;
+    background: #0a0e27;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+
+  .card {
+    background: #121740;
+    padding: 40px 25px;
+    border-radius: 16px;
+    width: 92%;
+    max-width: 480px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    text-align: center;
+  }
+
+  h2 {
+    font-size: 26px;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  p {
+    font-size: 14px;
+    color: #adb6c7;
+    margin-bottom: 25px;
+  }
+
+  .section {
+    margin-bottom: 35px;
+    text-align: left;
+  }
+
+  .section label {
+    font-size: 14px;
+    color: #c3c9d7;
+  }
+
+  .section select,
+  .section input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 12px;
+    margin-top: 10px;
+    background: #1f2a54;
+    color: #fff;
+    border: none;
+    outline: none;
+  }
+
+  #getLocationBtn {
+    width: 100%;
+    padding: 14px;
+    background: #4da3ff;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 12px;
+  }
+
+  #getLocationBtn:hover {
+    background: #2274d4;
+  }
+
+  #locationDisplay {
+    margin-top: 12px;
+    font-size: 14px;
+    color: #a4b3c9;
+    min-height: 20px;
+  }
+
+  button.next-btn {
+    width: 100%;
+    padding: 14px;
+    margin-top: 25px;
+    background: #4da3ff;
+    border: none;
+    border-radius: 12px;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+
+  button.next-btn:hover {
+    background: #195eb6;
+  }
+</style>
+
+<script>
+  function toggleBusyInput() {
+    const availability = document.getElementById("availability").value;
+    const busyInput = document.getElementById("busyUntilSection");
+
+    busyInput.style.display = availability === "busy" ? "block" : "none";
+  }
+
+  // Get live GPS location
+  function getLocation() {
+    const display = document.getElementById("locationDisplay");
+
+    if (!navigator.geolocation) {
+      display.textContent = "Geolocation not supported by your browser.";
+      return;
+    }
+
+    display.textContent = "Detecting location...";
+
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+
+        display.textContent = `Latitude: ${lat.toFixed(4)}, Longitude: ${lng.toFixed(4)}`;
+
+        // Save to local storage
+        localStorage.setItem("workerLat", lat);
+        localStorage.setItem("workerLng", lng);
+      },
+      () => {
+        display.textContent = "Unable to retrieve location.";
+      }
+    );
+  }
+
+  function saveData() {
+    const availability = document.getElementById("availability").value;
+
+    if (availability === "busy") {
+      const busyUntil = document.getElementById("busyUntil").value;
+      if (!busyUntil) {
+        alert("Please select when you will be available again.");
+        return;
+      }
+      localStorage.setItem("busyUntil", busyUntil);
+    }
+
+    localStorage.setItem("workerAvailability", availability);
+
+    // Check Location Saved
+    if (!localStorage.getItem("workerLat") || !localStorage.getItem("workerLng")) {
+      alert("Please allow location access before continuing.");
+      return;
+    }
+
+    // Redirect to Page 12 (Worker Dashboard Preview)
+    window.location.href = "worker-dashboard.html";
+  }
+</script>
+</head>
+
+<body>
+  <div class="card">
+    <h2>Set Your Availability</h2>
+    <p>This helps customers know when they can book you</p>
+
+    <!-- Availability Section -->
+    <div class="section">
+      <label for="availability">Availability Status</label>
+      <select id="availability" onchange="toggleBusyInput()">
+        <option value="available">Available Now</option>
+        <option value="busy">Busy Until…</option>
+      </select>
+    </div>
+
+    <!-- Busy Until Input -->
+    <div class="section" id="busyUntilSection" style="display:none;">
+      <label>Select Date & Time</label>
+      <input type="datetime-local" id="busyUntil"/>
+    </div>
+
+    <!-- Location Section -->
+    <div class="section">
+      <label>Your Current Location</label>
+      <button id="getLocationBtn" onclick="getLocation()">Get Current Location</button>
+      <div id="locationDisplay"></div>
+    </div>
+
+    <button class="next-btn" onclick="saveData()">Next</button>
+  </div>
+</body>
+</html>
