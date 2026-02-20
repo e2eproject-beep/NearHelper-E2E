@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Finder Details</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { width:92%; max-width:420px; margin:auto; margin-top:40px; }
+        .heading { font-size:24px; text-align:center; color:var(--primary-color); }
+        .sub { text-align:center; color:#777; margin-bottom:20px; }
+
+        #preview {
+            width:110px; height:110px; border-radius:50%;
+            display:block; margin:10px auto; object-fit:cover;
+            background:#ddd;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">Your Details</h2>
+    <p class="sub">Tell us about yourself</p>
+
+    <img id="preview" src="../images/default-user.png">
+
+    <input type="file" id="photo" accept="image/*" style="margin-bottom:10px;" onchange="loadImage(event)">
+
+    <div class="input-group">
+        <label>Your Name</label>
+        <input type="text" id="name" placeholder="Enter your full name">
+    </div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="saveDetails()">Next</button>
+
+</div>
+
+<script>
+let imageData = "";
+
+function loadImage(event){
+    const reader = new FileReader();
+    reader.onload = function(){
+        document.getElementById("preview").src = reader.result;
+        imageData = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+
+function saveDetails() {
+    const mobile = localStorage.getItem("finder_temp_mobile");
+    const name = document.getElementById("name").value.trim();
+    const error = document.getElementById("error");
+
+    if(name === ""){
+        error.textContent = "Please enter your name";
+        return;
+    }
+
+    // Save details
+    localStorage.setItem("finderName_" + mobile, name);
+    localStorage.setItem("finderPhoto_" + mobile, imageData || "../images/default-user.png");
+
+    // Save location (Geolocation)
+    navigator.geolocation.getCurrentPosition(pos => {
+        localStorage.setItem("finderLat_" + mobile, pos.coords.latitude);
+        localStorage.setItem("finderLng_" + mobile, pos.coords.longitude);
+
+        window.location.href = "finder-pin-setup.html";
+    });
+}
+</script>
+
+</body>
+</html>

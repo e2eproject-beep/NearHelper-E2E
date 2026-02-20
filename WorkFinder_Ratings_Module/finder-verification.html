@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Verify OTP – WorkFinder</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { margin-top:60px; width:92%; max-width:400px; }
+        .heading { text-align:center; font-size:24px; color:var(--primary-color); }
+        .sub { text-align:center; color:#777; margin-bottom:20px; }
+        .otp-input {
+            letter-spacing: 10px;
+            font-size: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">OTP Verification</h2>
+    <p class="sub">Enter the 4-digit OTP sent to your number</p>
+
+    <div class="input-group">
+        <label>OTP</label>
+        <input type="text" maxlength="4" id="otp" class="otp-input" placeholder="----">
+    </div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="verifyOTP()">Verify</button>
+
+</div>
+
+<script>
+function verifyOTP() {
+    const otp = document.getElementById("otp").value.trim();
+    const error = document.getElementById("error");
+
+    if(otp !== "1234") {
+        error.textContent = "Incorrect OTP. Try 1234";
+        return;
+    }
+
+    const mobile = localStorage.getItem("finder_temp_mobile");
+    const flow = localStorage.getItem("finder_flow");
+
+    if(flow === "registration") {
+        window.location.href = "finder-basic-details.html";
+    } else {
+        // Existing user → go to PIN unlock
+        window.location.href = "finder-pin-setup.html?mode=unlock";
+    }
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Finder Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <style>
+        .container { margin-top:60px; width:92%; max-width:400px; }
+        .heading { text-align:center; font-size:24px; color:var(--primary-color); }
+        .sub { text-align:center; color:#777; }
+    </style>
+</head>
+
+<body>
+
+<div class="container card">
+
+    <h2 class="heading">WorkFinder Login</h2>
+    <p class="sub">Enter your mobile number</p>
+
+    <div class="input-group">
+        <label>Mobile Number</label>
+        <input type="tel" id="mobile" maxlength="10" placeholder="Enter 10-digit number">
+    </div>
+
+    <p id="error" class="error"></p>
+
+    <button class="btn" onclick="startFinderLogin()">Continue</button>
+
+</div>
+
+<script>
+function startFinderLogin() {
+    const mobile = document.getElementById("mobile").value.trim();
+    const error = document.getElementById("error");
+
+    if(mobile.length !== 10 || isNaN(mobile)){
+        error.textContent = "Enter a valid 10-digit number";
+        return;
+    }
+
+    // Save mobile before OTP
+    localStorage.setItem("finder_temp_mobile", mobile);
+
+    // Check if finder exists
+    const exists = localStorage.getItem("finderREGISTERED_" + mobile);
+
+    localStorage.setItem("finder_flow", exists === "yes" ? "login" : "registration");
+
+    window.location.href = "finder-verification.html";
+}
+</script>
+
+</body>
+</html>
