@@ -1,1 +1,226 @@
+/* ============================================================
+   GLOBAL THEME VARIABLES
+   Dark Mode Default (NearHelper)
+============================================================ */
+:root {
+  --primary-color: #4da3ff;
+  --primary-hover: #2274d4;
+  --secondary-color: #8793ff;
+
+  --background-color: hsl(233, 56%, 16%); /* deep navy */
+  --surface-color: #1c2450; /* cards & boxes */
+  --text-color: #ffffff;
+  --text-light: #aeb7c2;
+
+  --border-color: #2e3b7a;
+  --input-bg: #1c2450;
+}
+
+/* Light Mode Override */
+body.light {
+  --primary-color: #4a90e2;
+  --primary-hover: #357ab7;
+  --secondary-color: #5c6bc0;
+
+  --background-color: #f4f6ff;
+  --surface-color: #ffffff;
+  --text-color: #1a1a1a;
+  --text-light: #4b4f58;
+
+  --border-color: #dcdcdc;
+  --input-bg: #ffffff;
+}
+
+/* ============================================================
+   BODY & BASE STYLES
+============================================================ */
+body {
+  margin: 0;
+  padding: 0;
+  background: var(--background-color);
+  color: var(--text-color);
+  font-family: "Poppins", sans-serif;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* ============================================================
+   WRAPPERS / CARDS - CENTERED
+============================================================ */
+.wrapper,
+.card,
+.box,
+.job-card,
+.notification,
+.setting-card,
+.worker-card,
+.list-item {
+  background: var(--surface-color);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 30px auto;  /* CENTER HORIZONTALLY */
+  max-width: 400px;   /* limit card width */
+  transition: background 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.4);
+  display: block;     /* ensures margin auto works */
+}
+
+/* ============================================================
+   HEADERS / TITLES
+============================================================ */
+h1, h2, h3 {
+  margin: 0 0 10px 0;
+  text-align: center;
+  color: var(--primary-color);
+}
+
+p {
+  text-align: center;
+  color: var(--text-light);
+}
+
+/* ============================================================
+   INPUT FIELDS
+============================================================ */
+input, select, textarea, .field input {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid var(--border-color);
+  background: var(--input-bg);
+  color: var(--text-color);
+  border-radius: 8px;
+  font-size: 16px;
+  margin: 10px 0;
+  box-sizing: border-box;
+  outline: none;
+  transition: border 0.3s ease, background 0.3s ease;
+}
+
+input:focus, select:focus, textarea:focus, .field input:focus {
+  border-color: var(--primary-color);
+}
+
+/* ============================================================
+   BUTTONS
+============================================================ */
+button,
+.login-btn,
+.save-btn,
+.pin-btn,
+.action-btn,
+.complete-btn,
+.back-btn {
+  width: 100%;
+  padding: 14px;
+  background: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+button:hover,
+.login-btn:hover,
+.save-btn:hover,
+.pin-btn:hover,
+.action-btn:hover,
+.complete-btn:hover,
+.back-btn:hover {
+  background: var(--primary-hover);
+}
+
+/* Small Buttons */
+.small-btn {
+  padding: 8px 12px;
+  font-size: 14px;
+  width: auto;
+}
+
+/* ============================================================
+   LINKS
+============================================================ */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* ============================================================
+   FLEX UTILITIES
+============================================================ */
+.flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.center {
+  text-align: center;
+}
+
+/* ============================================================
+   TOGGLE SWITCH
+============================================================ */
+.theme-toggle {
+  width: 50px;
+  height: 26px;
+  background: var(--border-color);
+  border-radius: 30px;
+  position: relative;
+  cursor: pointer;
+  margin: 20px auto;
+  transition: background 0.3s;
+}
+
+.theme-toggle .ball {
+  width: 22px;
+  height: 22px;
+  background: var(--surface-color);
+  border-radius: 50%;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s ease, background 0.3s ease;
+}
+
+body.light .theme-toggle {
+  background: var(--primary-color);
+}
+
+body.light .theme-toggle .ball {
+  transform: translateX(24px);
+}
+
+/* ============================================================
+   ERROR MESSAGES
+============================================================ */
+.error {
+  color: #e11d48;
+  text-align: left;
+  margin: 5px 0;
+  font-size: 14px;
+}
+
+/* ============================================================
+   SCROLLBAR
+============================================================ */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--primary-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--background-color);
+}
 
