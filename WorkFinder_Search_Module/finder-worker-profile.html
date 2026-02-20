@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Worker Profile</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/styles.css">
+
+<style>
+body { font-family:Poppins; background:#f2f2f2; }
+
+header {
+    background:var(--primary-color);
+    color:white; text-align:center;
+    padding:18px; font-size:22px; font-weight:600;
+}
+
+.card {
+    width:92%; max-width:420px;
+    margin:20px auto; padding:18px;
+    background:white; border-radius:12px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+
+#photo {
+    width:120px; height:120px; border-radius:50%;
+    display:block; margin:auto; object-fit:cover;
+}
+
+h3 { text-align:center; margin-top:10px; }
+.skill-tag {
+    display:inline-block; padding:5px 10px;
+    background:#e5e5e5; margin:3px;
+    border-radius:8px; font-size:14px;
+}
+.btn { width:100%; margin-top:15px; }
+</style>
+</head>
+
+<body>
+
+<header>Worker Profile</header>
+
+<div class="card">
+    <img id="photo">
+    <h3 id="name"></h3>
+    <p><b>Job:</b> <span id="job"></span></p>
+    <p><b>Availability:</b> <span id="avail"></span></p>
+    <p><b>Rating:</b> ⭐ <span id="rating"></span></p>
+    <p><b>Distance:</b> <span id="distance"></span> km</p>
+
+    <p><b>Skills:</b></p>
+    <div id="skills"></div>
+
+    <button class="btn" onclick="requestJob()">Request Job</button>
+</div>
+
+<script>
+let userLat = 0, userLng = 0;
+navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+});
+
+const id = localStorage.getItem("finder_selected_worker");
+
+const worker = {
+    name: localStorage.getItem("workerName_" + id),
+    job: localStorage.getItem("workerModule_" + id),
+    skills: JSON.parse(localStorage.getItem("workerSkills_" + id) || "[]"),
+    rating: localStorage.getItem("workerRating_" + id),
+    availability: localStorage.getItem("workerAvailable_" + id),
+    photo: localStorage.getItem("workerPhoto_" + id),
+    lat: localStorage.getItem("workerLat_" + id),
+    lng: localStorage.getItem("workerLng_" + id)
+};
+
+document.getElementById("photo").src = worker.photo;
+document.getElementById("name").textContent = worker.name;
+document.getElementById("job").textContent = worker.job;
+document.getElementById("avail").textContent = worker.availability;
+document.getElementById("rating").textContent = worker.rating;
+
+document.getElementById("distance").textContent =
+    calcDistance(userLat, userLng, worker.lat, worker.lng).toFixed(1);
+
+worker.skills.forEach(skill => {
+    document.getElementById("skills").innerHTML +=
+        `<span class="skill-tag">${skill}</span>`;
+});
+
+function calcDistance(lat1, lon1, lat2, lon2){
+    const R=6371;
+    const dLat=(lat2-lat1)*Math.PI/180;
+    const dLon=(lon2-lon1)*Math.PI/180;
+    const a=Math.sin(dLat/2)**2 +
+        Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*
+        Math.sin(dLon/2)**2;
+
+    return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+function requestJob(){
+    localStorage.setItem("finder_request_target", id);
+    window.location.href = "finder-request-job.html";
+}
+</script>
+
+</body>
+</html>

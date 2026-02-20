@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Search Workers – Finder</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="../css/styles.css">
+
+<style>
+body { background:#f2f2f2; font-family:Poppins, sans-serif; margin:0; }
+
+header {
+    background: var(--primary-color);
+    color: white;
+    padding: 18px;
+    font-size: 22px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.filter-box { background:white; margin:15px; padding:18px; border-radius:12px; }
+.filter-box label { font-weight:600; display:block; margin-top:10px; }
+.filter-box input, .filter-box select {
+    width:100%; padding:12px; border-radius:10px; border:1px solid #ccc;
+}
+.filter-box button {
+    margin-top:15px; width:100%;
+    background:var(--primary-color); color:white;
+    border:none; padding:14px; font-size:16px; border-radius:10px;
+}
+
+.worker-list {
+    display:grid; gap:20px;
+    grid-template-columns: repeat(auto-fit, minmax(260px,1fr));
+    padding:20px;
+}
+.card {
+    background:white; padding:15px; border-radius:12px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.1);
+}
+.card img { width:100%; height:150px; object-fit:cover; border-radius:10px; }
+.name { font-size:20px; margin-top:10px; font-weight:600; }
+.job { color:#555; }
+.rating { color:#ffa500; font-weight:600; margin-top:5px; }
+.distance { margin-top:5px; font-weight:500; }
+</style>
+</head>
+
+<body>
+
+<header>Search Workers</header>
+
+<div class="filter-box">
+    <label>Keyword</label>
+    <input type="text" id="keyword">
+
+    <label>Availability</label>
+    <select id="availability">
+        <option value="">Any</option>
+        <option value="available">Currently Available</option>
+        <option value="not-available">Not Available</option>
+    </select>
+
+    <label>Proximity (km)</label>
+    <select id="radius">
+        <option value="999">Any Distance</option>
+        <option value="5">Within 5 km</option>
+        <option value="10">Within 10 km</option>
+        <option value="20">Within 20 km</option>
+    </select>
+
+    <button onclick="startSearch()">Search</button>
+</div>
+
+<h2 style="margin-left:20px;" id="resultTitle">All Workers</h2>
+<div id="workerList" class="worker-list"></div>
+
+<script>
+let userLat = 0, userLng = 0;
+navigator.geolocation.getCurrentPosition(pos => {
+    userLat = pos.coords.latitude;
+    userLng = pos.coords.longitude;
+});
+
+function fetchWorkers() {
+    const workers = [];
+
+    Object.keys(localStorage).forEach(key => {
+        if(key.startsWith("workerREGISTERED_") && localStorage.getItem(key) === "yes") {
+
+            const mobile = key.replace("workerREGISTERED_", "");
+
+            workers.push({
+                id: mobile,
+                name: localStorage.getItem("workerName_" + mobile),
+                job: localStorage.getItem("workerModule_" + mobile),
+                skills: JSON.parse(localStorage.getItem("workerSkills_" + mobile) || "[]"),
+                availability: localStorage.getItem("workerAvailable_" + mobile),
+                rating: parseFloat(localStorage.getItem("workerRating_" + mobile)),
+                latitude: parseFloat(localStorage.getItem("workerLat_" + mobile)),
+                longitude: parseFloat(localStorage.getItem("workerLng_" + mobile)),
+                photo: localStorage.getItem("workerPhoto_" + mobile)
+            });
+        }
+    });
+
+    return workers;
+}
+
+function distance(lat1, lon1, lat2, lon2) {
+    if (!lat2 || !lon2) return 999;
+    const R = 6371;
+    const dLat = (lat2 - lat1) * Math.PI/180;
+    const dLon = (lon2 - lon1) * Math.PI/180;
+    const a =
+        Math.sin(dLat/2)**2 +
+        Math.cos(lat1*Math.PI/180) *
+        Math.cos(lat2*Math.PI/180) *
+        Math.sin(dLon/2)**2;
+
+    return 2 * R * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+
+function display(list) {
+    const box = document.getElementById("workerList");
+    box.innerHTML = "";
+
+    if(list.length === 0) {
+        box.innerHTML = "<p>No workers found.</p>";
+        return;
+    }
+
+    list.forEach(w => {
+        const dist = distance(userLat, userLng, w.latitude, w.longitude).toFixed(1);
+
+        box.innerHTML += `
+            <div class="card" onclick="openProfile('${w.id}')">
+                <img src="${w.photo}">
+                <div class="name">${w.name}</div>
+                <div class="job">${w.job}</div>
+                <div class="rating">⭐ ${w.rating}</div>
+                <div class="distance">📍 ${dist} km away</div>
+            </div>
+        `;
+    });
+}
+
+function loadAllWorkers() {
+    document.getElementById("resultTitle").innerHTML = "All Workers";
+    display(fetchWorkers());
+}
+
+function startSearch() {
+    const workers = fetchWorkers();
+
+    const key = keyword.value.toLowerCase();
+    const av = availability.value;
+    const radius = parseInt(radius.value);
+
+    const results = workers.filter(w =>
+        (w.name.toLowerCase().includes(key) ||
+         w.skills.join(" ").toLowerCase().includes(key)) &&
+        (av === "" || w.availability === av) &&
+        (distance(userLat, userLng, w.latitude, w.longitude) <= radius)
+    );
+
+    document.getElementById("resultTitle").innerHTML = "Search Results";
+    display(results);
+}
+
+function openProfile(id){
+    localStorage.setItem("finder_selected_worker", id);
+    window.location.href = "finder-worker-profile.html";
+}
+
+loadAllWorkers();
+</script>
+
+</body>
+</html>

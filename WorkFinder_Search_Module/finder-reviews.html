@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Review Worker</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../css/styles.css">
+
+<style>
+body { background:#f2f2f2; font-family:Poppins; }
+header {
+    background:var(--primary-color); color:white;
+    text-align:center; padding:18px; font-size:22px; font-weight:600;
+}
+.container {
+    background:white; width:92%; max-width:420px;
+    margin:20px auto; padding:20px;
+    border-radius:12px; box-shadow:0 3px 8px rgba(0,0,0,0.1);
+}
+textarea {
+    width:100%; height:120px;
+    padding:10px; margin-top:10px;
+    border-radius:10px; border:1px solid #ccc;
+}
+.btn { width:100%; margin-top:15px; }
+</style>
+</head>
+
+<body>
+
+<header>Review Worker</header>
+
+<div class="container">
+    <p><b>Rating</b></p>
+    <select id="rate" class="input-group">
+        <option>5</option>
+        <option>4</option>
+        <option>3</option>
+        <option>2</option>
+        <option>1</option>
+    </select>
+
+    <p><b>Review</b></p>
+    <textarea id="review" placeholder="Write your review..."></textarea>
+
+    <button class="btn" onclick="saveReview()">Submit</button>
+</div>
+
+<script>
+const worker = localStorage.getItem("review_worker");
+
+function saveReview(){
+    const rating = parseInt(document.getElementById("rate").value);
+    const text = document.getElementById("review").value.trim();
+
+    if(text.length < 3){
+        alert("Please enter a valid review");
+        return;
+    }
+
+    let list = JSON.parse(localStorage.getItem("workerReviews_" + worker) || "[]");
+
+    list.push({
+        rating: rating,
+        text: text,
+        date: new Date().toLocaleString()
+    });
+
+    localStorage.setItem("workerReviews_" + worker, JSON.stringify(list));
+
+    alert("Review Submitted!");
+    window.location.href = "finder-dashboard.html";
+}
+</script>
+
+</body>
+</html>
