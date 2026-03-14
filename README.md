@@ -1,6 +1,6 @@
 # E2E Project
 ## Abstract
-# Title: NearHelper-Connecting Domestic and Agricutural Workers In Real-Time.
+# Title: NearHelper-Connecting Workers and Work Finders.
 # Problem Statement 
 Finding reliable domestic and agricultural workers can be a challenging task, especially in urban 
 households and rural areas. Many workers are semi-literate or illiterate, making conventional digital 
